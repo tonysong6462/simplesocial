@@ -5,7 +5,7 @@
 	<div class="content">
 		{% if user.is_authenticated %}
 		<h2>
-			Welcome back188
+			Welcome back
 			<a href="{% url 'posts:for_user' username=user.username %}">@{{user.username }}</a>
 		</h2>
 
