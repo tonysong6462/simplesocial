@@ -18,6 +18,7 @@ class CreateGroup(LoginRequiredMixin, generic.CreateView):
 
 class SingleGroup(generic.DetailView):
     model = Group
+    template_name = "groups/group_detail.html"
 
 class ListGroups(generic.ListView):
     template_name = "groups/group_list.html"

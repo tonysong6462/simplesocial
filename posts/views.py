@@ -13,6 +13,9 @@ from . import models
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class PostList(SelectRelatedMixin, generic.ListView):
     model = models.Post
@@ -77,18 +80,42 @@ class CreatePost(LoginRequiredMixin, SelectRelatedMixin, generic.CreateView):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()
+        messages.success(self.request, "Post Created Successfully")
         return super().form_valid(form)
 
 
 class DeletePost(LoginRequiredMixin, SelectRelatedMixin, generic.DeleteView):
-    model = models.Post
-    select_related = ("user", "group")
-    success_url = reverse_lazy("posts:all")
+      model = models.Post
+      template_name = "posts/post_confirm_delete.html"
+      context_object_name = "post"
+      select_related = ("user", "group")
+      success_url = reverse_lazy("posts:all")
+      
+      
+      def get_context_data(self, **kwargs):
+            context = super().get_context_data(**kwargs)        
+     
+            context["post_user"] = self.show_model_fields(self.object)    
+            return context
+  
+      def show_model_fields(self,obj):
+        fields = []
+        for field in obj._meta.fields:
+            fields.append({
+                'name': field.name,
+                'value': getattr(obj, field.name, None)
+            })
+        return  fields
+    
+      
+    
+    
+      def get_queryset(self):   
+         queryset = super().get_queryset()
+         return queryset.filter(user_id=self.request.user.id)
+    
+ 
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(user_id=self.request.user.id)
-
-    def delete(self, *args, **kwargs):
-        messages.success(self.request, "Post Deleted")
-        return super().delete(*args, **kwargs)
+      def delete(self, *args, **kwargs):
+          messages.success(self.request, "Post Deleted")  
+          return super().delete(*args, **kwargs)
