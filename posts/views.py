@@ -17,6 +17,18 @@ User = get_user_model()
 class PostList(SelectRelatedMixin, generic.ListView):
     model = models.Post
     select_related = ("user", "group")
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        
+        # return  User.objects.prefetch_related("posts").get(
+        #         username__iexact=self.request.user.username
+        #     ).posts.all()
+        # return queryset.filter(user__username__iexact=self.request.user.username)
+        return queryset.filter()
+
+
+
 
 
 class UserPosts(generic.ListView):
