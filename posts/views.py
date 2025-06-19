@@ -17,6 +17,7 @@ User = get_user_model()
 class PostList(SelectRelatedMixin, generic.ListView):
     model = models.Post
     select_related = ("user", "group")
+    context_object_name = "Tonyposts"
     
     def get_queryset(self):
         queryset = super().get_queryset()
