@@ -18,14 +18,30 @@ class CreateGroup(LoginRequiredMixin, generic.CreateView):
 
 class SingleGroup(generic.DetailView):
     model = Group
-    template_name = "groups/group_detail.html"
+    template_name = "groups/group_detail.html"   
+    context_object_name = "group"
 
 class ListGroups(generic.ListView):
     template_name = "groups/group_list.html"
     model = Group
-    
-    
 
+    context_object_name = "group_list"
+      
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        array = [ ]
+        for group in self.object_list:
+            array.append(self.show_model_fields(group))
+        context["group_array"] = array
+        return context
+    
+    def show_model_fields(self, obj):
+        field_dict = {}
+        for field in obj._meta.fields:
+            field_name = field.name
+            field_value = getattr(obj, field_name, None)
+            field_dict[field_name] = field_value
+        return field_dict
 
 class JoinGroup(LoginRequiredMixin, generic.RedirectView):
 
