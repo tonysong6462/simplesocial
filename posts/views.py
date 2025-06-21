@@ -1,3 +1,4 @@
+import json
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -6,6 +7,8 @@ from django.http import Http404
 from django.views import generic
 
 from braces.views import SelectRelatedMixin
+
+from common.utils import *
 
 from . import forms
 from . import models
@@ -70,6 +73,16 @@ class CreatePost(LoginRequiredMixin, SelectRelatedMixin, generic.CreateView):
     # form_class = forms.PostForm
     fields = ('message','group')
     model = models.Post
+    
+  
+    
+         
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        debug_request(self.request)
+        return super().get(request, *args, **kwargs)
+
+   
 
     # def get_form_kwargs(self):
     #     kwargs = super().get_form_kwargs()
@@ -80,6 +93,7 @@ class CreatePost(LoginRequiredMixin, SelectRelatedMixin, generic.CreateView):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()
+        debug_request(self.request)
         messages.success(self.request, "Post Created Successfully")
         return super().form_valid(form)
 

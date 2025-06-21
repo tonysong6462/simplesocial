@@ -1,3 +1,4 @@
+from asyncio.log import logger
 from django.conf import settings
 
 from django.urls import reverse
@@ -24,6 +25,8 @@ class Post(models.Model):
 
     def save(self, *args, **kwargs):
         self.message_html = markdown.markdown(self.message)
+       
+        logger.info("=== this is a Create Post 888 ===")
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):

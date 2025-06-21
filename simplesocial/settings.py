@@ -133,35 +133,56 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# settings.py
+
+
+# 在文件末尾添加或修改LOGGING配置
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,  # 不关闭已有的日志器
-
+    'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '[{asctime}] {levelname} {name}: {message}',
-            'style': '{',  # 使用 Python 3.6+ 的新格式语法
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{asctime} {levelname} {message}',
+            'style': '{',
         },
     },
-
     'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
         'file': {
-            'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs/django.log'),
+            'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),  # 日志文件路径
             'formatter': 'verbose',
+            'encoding': 'utf-8',
+        },
+        'debug_file': {
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'debug.log'),  # 调试日志文件
+            'formatter': 'verbose',
+            'encoding': 'utf-8',
         },
     },
-
+    'root': {
+        'handlers': ['console', 'file'],
+        'level': 'INFO',
+    },
     'loggers': {
         'django': {
-            'handlers': ['file'],
+            'handlers': ['console', 'file'],
             'level': 'INFO',
-            'propagate': True,
+            'propagate': False,
         },
-        '__main__': {  # 你自己写的 logger 可以用 __name__ 对应这个
-            'handlers': ['file'],
+        # 你的应用名称
+        'groups': {  # 替换为你的应用名称
+            'handlers': ['console', 'debug_file'],  # 同时输出到控制台和文件
             'level': 'DEBUG',
+            'propagate': False,
         },
     },
 }

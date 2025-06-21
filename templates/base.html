@@ -23,15 +23,16 @@
 
 
   </head>
-{% if messages %}
+
+ {% if messages %}
   <ul class="messages">
     {% for message in messages %}
       <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-        {{ message }}
+        {{ message }}  ha ha ha
       </li>
     {% endfor %}
   </ul>
-{% endif %}
+{% endif %} 
 
   <body>
 
