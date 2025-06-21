@@ -61,6 +61,8 @@ class UserPosts(generic.ListView):
 class PostDetail(SelectRelatedMixin, generic.DetailView):
     model = models.Post
     select_related = ("user", "group")
+    template_name = "posts/post_detail.html"
+    context_object_name = "post"
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -109,21 +111,9 @@ class DeletePost(LoginRequiredMixin, SelectRelatedMixin, generic.DeleteView):
       def get_context_data(self, **kwargs):
             context = super().get_context_data(**kwargs)        
      
-            context["post_user"] = self.show_model_fields(self.object)    
+            context["post_user"] = show_model_deep_fields(self.object,0,2,None)    
             return context
-  
-      def show_model_fields(self,obj):
-        fields = []
-        for field in obj._meta.fields:
-            fields.append({
-                'name': field.name,
-                'value': getattr(obj, field.name, None)
-            })
-        return  fields
-    
-      
-    
-    
+     
       def get_queryset(self):   
          queryset = super().get_queryset()
          return queryset.filter(user_id=self.request.user.id)

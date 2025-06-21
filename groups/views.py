@@ -33,15 +33,9 @@ class SingleGroup(generic.DetailView):
     def get_context_data(self, **kwargs):
         print("===this is a single Group ===")
         context = super().get_context_data(**kwargs)    
-        context["group_info"] = self.show_model_fields(self.object)
+        context["group_info"] = show_model_dic_fields(self.object)
         return context
-    def show_model_fields(self, obj):
-        field_dict = {}
-        for field in obj._meta.fields:
-            field_name = field.name
-            field_value = getattr(obj, field_name, None)
-            field_dict[field_name] = field_value
-        return field_dict
+    
 
 
 class ListGroups(generic.ListView):
@@ -56,17 +50,11 @@ class ListGroups(generic.ListView):
         print("=== List of Group INFO2 ===")
         array = [ ]
         for group in self.object_list:
-            array.append(self.show_model_fields(group))
+            array.append(show_model_dic_fields(group))
         context["group_array"] = array
         return context
     
-    def show_model_fields(self, obj):
-        field_dict = {}
-        for field in obj._meta.fields:
-            field_name = field.name
-            field_value = getattr(obj, field_name, None)
-            field_dict[field_name] = field_value
-        return field_dict
+  
 
 class JoinGroup(LoginRequiredMixin, generic.RedirectView):
 

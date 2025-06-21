@@ -39,6 +39,47 @@ def request_to_dict(request):
         }
     }
     return request_data
+def show_model_dic_fields( obj):
+        field_dict = {}
+        for field in obj._meta.fields:
+            field_name = field.name
+            field_value = getattr(obj, field_name, None)
+            field_dict[field_name] = field_value
+        return field_dict
+
+def show_model_fields(obj):
+        fields = []
+        for field in obj._meta.fields:
+            fields.append({
+                'name': field.name,
+                'value': getattr(obj, field.name, None)
+            })
+        return  fields
+    
+    
+def show_model_deep_fields(obj, depth=0, max_depth=2, seen=None):
+    if seen is None:
+        seen = set()
+
+    if obj in seen or depth > max_depth:
+        return f"<Already seen or max depth reached>"
+
+    seen.add(obj)
+
+    fields = []
+    for field in obj._meta.fields:
+        value = getattr(obj, field.name, None)
+
+        # If the value is another model instance, go deeper
+        if hasattr(value, '_meta'):
+            value = show_model_deep_fields(value, depth + 1, max_depth, seen)
+
+        fields.append({
+            'name': field.name,
+            'value': value
+        })
+
+    return fields
 
 def log_request_debug(request, logger, extra_info=None):
     """记录请求调试信息的便捷函数"""
