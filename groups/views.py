@@ -24,6 +24,29 @@ class CreateGroup(LoginRequiredMixin, generic.CreateView):
         context = super().get_context_data(**kwargs)       
         return context
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import generic
+from django.urls import reverse_lazy
+from .models import Group
+
+class GroupUpdate(LoginRequiredMixin, generic.UpdateView):
+    model = Group
+    fields = ("name", "description")
+    template_name = "groups/group_form.html"
+
+    def get_queryset(self):
+        """
+        Optionally restrict who can edit the group, e.g., only group creator.
+        """
+        return Group.objects.all()  # You can filter based on user if needed
+
+    def get_success_url(self):
+        """
+        Redirect after successful update.
+        """
+        return reverse_lazy("groups:single", kwargs={"slug": self.object.slug})
+
+
 class SingleGroup(generic.DetailView):
     model = Group
     template_name = "groups/group_detail.html"   
