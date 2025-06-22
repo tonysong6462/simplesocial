@@ -57,7 +57,7 @@ class SingleGroup(generic.DetailView):
         context = super().get_context_data(**kwargs) 
        
         logger.info("kwargs with pprint:")
-        # logger.info(pprint.pformat(self.kwargs))
+        logger.info(pprint.pformat(self.kwargs))
         # show_model_dic = debug_request(self.request)
         # show_model_dic1 = show_model_deep_fields(self.object)
         # context["group_info"] = show_model_dic
