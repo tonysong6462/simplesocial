@@ -76,9 +76,7 @@ class CreatePost(LoginRequiredMixin, SelectRelatedMixin, generic.CreateView):
     fields = ('message','group')
     model = models.Post
     
-  
-    
-         
+          
     def get(self, request, *args, **kwargs):
         self.object = None
         debug_request(self.request)
@@ -107,19 +105,40 @@ class DeletePost(LoginRequiredMixin, SelectRelatedMixin, generic.DeleteView):
       select_related = ("user", "group")
       success_url = reverse_lazy("posts:all")
       
+    
+      
       
       def get_context_data(self, **kwargs):
-            context = super().get_context_data(**kwargs)        
-     
+                   
+            logger.info("=== 记录请求调试信息的便捷函数 ===")
+            debug_info = request_to_dict(self.request)
+            logger.info(json.dumps(debug_info, indent=2, default=str, ensure_ascii=False))
+            logger.info("=== 记录请求调试信息的便捷函数  完毕 ===")            
+            context = super().get_context_data(**kwargs)            
             context["post_user"] = show_model_deep_fields(self.object,0,2,None)    
             return context
      
-      def get_queryset(self):   
-         queryset = super().get_queryset()
-         return queryset.filter(user_id=self.request.user.id)
+      def get_queryset(self): 
+       
+          queryset = super().get_queryset()
+          return queryset.filter(user_id=self.request.user.id)
+      
+      def form_valid(self, form):
+            logger.info("=== 记录请求删除 ===")
+            debug_info = request_to_dict(self.request)
+            logger.info(json.dumps(debug_info, indent=2, default=str, ensure_ascii=False))
+            logger.info("=== 记录请求删除   完毕 ===")
+            messages.success(self.request, "Post Deleted")         
+            return super().form_valid(form)
     
- 
+     
+    
 
-      def delete(self, *args, **kwargs):
-          messages.success(self.request, "Post Deleted")  
-          return super().delete(*args, **kwargs)
+    #   def delete(self, *args, **kwargs):
+    #         logger.info("=== 删除帖子视图.删除() 开始 ===")
+    #         messages.success(self.request, "Post Deleted") 
+    #         # return super().delete(*args, **kwargs)
+    #         response = super().delete(self.request, *args, **kwargs)
+    #         logger.info("=== 删除帖子视图.删除() 完成 ===")
+    #         return response
+      

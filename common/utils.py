@@ -94,15 +94,3 @@ def log_request_debug(request, logger, extra_info=None):
     
     return debug_info
 
-def get_client_ip(request):
-    """获取客户端真实IP地址"""
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
-
-def is_ajax_request(request):
-    """判断是否为AJAX请求"""
-    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'

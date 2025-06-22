@@ -5,8 +5,9 @@
 
 <h1>{{group.name}}</h1>
 <h2> Member Count: {{group.members.count}}</h2>
- <pre>{{ group.slug }}</pre>
- <pre>{{ group_info|pprint }}</pre>
+
+ {% comment %} <pre>{{ group.slug }}</pre>
+ <pre>{{ group_info|pprint }}</pre> {% endcomment %}
 
   <div class="content">
 

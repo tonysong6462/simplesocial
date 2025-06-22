@@ -13,16 +13,15 @@ from groups.models import Group,GroupMember
 from . import models
 
 import json
+import pprint
 from common.utils import *
 
 class CreateGroup(LoginRequiredMixin, generic.CreateView):
     fields = ("name", "description")
     model = Group
-    
-    def get_context_data(self, **kwargs):
-        print("===this is a Create Group ===")
-        context = super().get_context_data(**kwargs)    
-     
+    template_name = "groups/group_form.html" 
+    def get_context_data(self, **kwargs):     
+        context = super().get_context_data(**kwargs)       
         return context
 
 class SingleGroup(generic.DetailView):
@@ -31,9 +30,35 @@ class SingleGroup(generic.DetailView):
     context_object_name = "group"
     
     def get_context_data(self, **kwargs):
-        print("===this is a single Group ===")
-        context = super().get_context_data(**kwargs)    
-        context["group_info"] = show_model_dic_fields(self.object)
+       
+        context = super().get_context_data(**kwargs) 
+       
+        # logger.info("kwargs with pprint:")
+        # logger.info(pprint.pformat(self.kwargs))
+        # show_model_dic = debug_request(self.request)
+        # show_model_dic1 = show_model_deep_fields(self.object)
+        # context["group_info"] = show_model_dic
+        
+        # members_info = []
+        # for member in self.object.members.all():
+        #         members_info.append({
+        #         'id': member.id,
+        #         'username': member.username,
+        #         'email': member.email,
+        #         'full_name': f"{member.first_name} {member.last_name}".strip(),
+        #     # Add any other User model fields you want to include
+        #         })
+        
+        # # Add the members key-value pair to the dictionary
+        # show_model_dic1.append({
+        #     'name': 'members',
+        #     'value': members_info
+        # })
+        # logger.info(json.dumps(show_model_dic, indent=2, default=str, ensure_ascii=False))
+        # logger.info(json.dumps(show_model_dic1, indent=2, default=str, ensure_ascii=False))
+        # logger.info("=== 记录请求 SingleGroup ===")
+        # logger.info(json.dumps(show_model_dic, indent=2, default=str, ensure_ascii=False))
+        # logger.info("=== 记录 请求 SingleGroup  完毕 ===")
         return context
     
 
@@ -43,15 +68,19 @@ class ListGroups(generic.ListView):
     model = Group
 
     context_object_name = "group_list"
-    print("=== List of Group INFO ===")
-      
+    
     def get_context_data(self, **kwargs):
+      
         context = super().get_context_data(**kwargs)
-        print("=== List of Group INFO2 ===")
+     
         array = [ ]
         for group in self.object_list:
+            group: Group = group          
             array.append(show_model_dic_fields(group))
+                
         context["group_array"] = array
+        
+       
         return context
     
   
@@ -72,7 +101,6 @@ class JoinGroup(LoginRequiredMixin, generic.RedirectView):
 
         else:
             messages.success(self.request,"You are now a member of the {} group.".format(group.name))
-            messages.success(self.request,"You are now a member of the tony join the group.")
 
         return super().get(request, *args, **kwargs)
 
@@ -84,16 +112,14 @@ class LeaveGroup(LoginRequiredMixin, generic.RedirectView):
 
     def get(self, request, *args, **kwargs):
 
-        try:
-            
-            
+        try:          
             debug_info = {
               'method': request.method,
               'path': request.path,
               'GET': dict(request.GET),
                'POST': dict(request.POST),
-        'user': str(request.user),
-        'kwargs': kwargs
+            'user': str(request.user),
+            'kwargs': kwargs
                  }
             print("=== REQUEST DEBUG INFO ===")
             print(json.dumps(debug_info, indent=2, default=str))
@@ -105,7 +131,6 @@ class LeaveGroup(LoginRequiredMixin, generic.RedirectView):
             ).get()
             
           
-
         except models.GroupMember.DoesNotExist:
             messages.warning(
                 self.request,
@@ -117,5 +142,5 @@ class LeaveGroup(LoginRequiredMixin, generic.RedirectView):
                 self.request,
                 "You have successfully left this group."
             )
-            messages.success(self.request, self.request)
+         
         return super().get(request, *args, **kwargs)
