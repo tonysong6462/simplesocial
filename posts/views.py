@@ -109,7 +109,7 @@ class DeletePost(LoginRequiredMixin, SelectRelatedMixin, generic.DeleteView):
       
       
       def get_context_data(self, **kwargs):
-            logger.info("=== add dev branch ===")       
+              
             logger.info("=== 记录请求调试信息的便捷函数 ===")
             debug_info = request_to_dict(self.request)
             logger.info(json.dumps(debug_info, indent=2, default=str, ensure_ascii=False))
