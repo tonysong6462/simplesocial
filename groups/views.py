@@ -36,6 +36,8 @@ class GroupUpdate(LoginRequiredMixin, generic.UpdateView):
 
     def get_queryset(self):
         """
+        
+        this is dev branch update
         Optionally restrict who can edit the group, e.g., only group creator.
         """
         return Group.objects.all()  # You can filter based on user if needed
