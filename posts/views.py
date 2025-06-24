@@ -41,6 +41,7 @@ class PostList(SelectRelatedMixin, generic.ListView):
 class UserPosts(generic.ListView):
     model = models.Post
     template_name = "posts/user_post_list.html"
+    context_object_name = "post_list"
 
     def get_queryset(self):
         try:
@@ -75,14 +76,11 @@ class CreatePost(LoginRequiredMixin, SelectRelatedMixin, generic.CreateView):
     # form_class = forms.PostForm
     fields = ('message','group')
     model = models.Post
-    
-          
+            
     def get(self, request, *args, **kwargs):
         self.object = None
         debug_request(self.request)
         return super().get(request, *args, **kwargs)
-
-   
 
     # def get_form_kwargs(self):
     #     kwargs = super().get_form_kwargs()

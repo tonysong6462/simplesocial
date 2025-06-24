@@ -15,6 +15,11 @@ from . import models
 import json
 import pprint
 from common.utils import *
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import generic
+from django.urls import reverse_lazy
+from .models import Group
+
 
 class CreateGroup(LoginRequiredMixin, generic.CreateView):
     fields = ("name", "description")
@@ -24,10 +29,6 @@ class CreateGroup(LoginRequiredMixin, generic.CreateView):
         context = super().get_context_data(**kwargs)       
         return context
 
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views import generic
-from django.urls import reverse_lazy
-from .models import Group
 
 class GroupUpdate(LoginRequiredMixin, generic.UpdateView):
     model = Group

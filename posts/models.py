@@ -26,7 +26,7 @@ class Post(models.Model):
     def save(self, *args, **kwargs):
         self.message_html = markdown.markdown(self.message)
        
-        logger.info("=== this is a Create Post 888 ===")
+        logger.info("=== this is a Create Post ===")
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
