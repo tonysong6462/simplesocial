@@ -17,6 +17,11 @@
 	<a href="{% url 'groups:update' slug=group.slug %}" 
 	class="btn btn-lg btn-fill btn-warning">
 	<span class="glyphicon glyphicon-refresh"></span> Update</a>
+
+
+	<a href="{% url 'groups:delete' group.pk %}"
+	class="btn btn-lg btn-fill btn-danger">
+	<span class="glyphicon glyphicon-trash"></span> Delete</a>
 	
 
 

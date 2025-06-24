@@ -1,24 +1,17 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import(
-    LoginRequiredMixin,
-    PermissionRequiredMixin
-)
-
-
-from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.urls import reverse, reverse_lazy
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.views import generic
-from groups.models import Group,GroupMember
-from . import models
+
+from accounts import models
+
+from .models import Group, GroupMember  # 假设 GroupMember 也在 .models 中
+from common.utils import *
 
 import json
 import pprint
-from common.utils import *
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views import generic
-from django.urls import reverse_lazy
-from .models import Group
 
 
 class CreateGroup(LoginRequiredMixin, generic.CreateView):
@@ -170,3 +163,34 @@ class LeaveGroup(LoginRequiredMixin, generic.RedirectView):
             )
          
         return super().get(request, *args, **kwargs)
+
+
+
+class DeleteGroup(LoginRequiredMixin, generic.DeleteView):
+    model = Group
+    template_name = "groups/group_confirm_delete.html"
+    success_url = reverse_lazy("groups:all")  # 删除后重定向到群组列表页面
+    context_object_name = "group"
+
+    def get(self, request, *args, **kwargs):
+
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
+    
+
+    def get_queryset(self):
+                                 
+        # logger.info("=== 记录请求调试删除 ===")
+        # debug_info = request_to_dict(self.request)
+        # logger.info(json.dumps(debug_info, indent=2, default=str, ensure_ascii=False))  
+       
+        kwargs_dict = dict(self.kwargs)
+        logger.info(f"Route parameters (self.kwargs): {kwargs_dict}")           
+        pk = self.kwargs.get("pk")            
+        return Group.objects.filter(pk=pk)
+     
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     return context
+

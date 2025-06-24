@@ -10,4 +10,5 @@ urlpatterns = [
     re_path(r"^edit/(?P<slug>[-\w]+)/$", views.GroupUpdate.as_view(), name="update"),
     re_path(r"join/(?P<slug>[-\w]+)/$", views.JoinGroup.as_view(), name="join"),
     re_path(r"leave/(?P<slug>[-\w]+)/$", views.LeaveGroup.as_view(), name="leave"),
+    re_path(r"delete/(?P<pk>\d+)/$", views.DeleteGroup.as_view(), name="delete"),
 ]

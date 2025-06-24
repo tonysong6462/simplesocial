@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>确认删除群组 "{{ object.name }}"？</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">确认删除</button>
+    <a href="{% url 'groups:all' %}" class="btn btn-secondary">取消</a>
+  </form>
+{% endblock %}
